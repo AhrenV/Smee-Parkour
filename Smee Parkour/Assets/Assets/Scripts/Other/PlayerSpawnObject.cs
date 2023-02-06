@@ -37,7 +37,7 @@ public class PlayerSpawnObject : NetworkBehaviour
         ServerManager.Spawn(spawned); // spawn object in the server world --> can be seen by all clients
         SetSpawnedObject(spawned, script); // call client function to set spawnedObject parameter to the object for EVERY client so all client know they CANT spawn another object
         // ^ acts as a toggle to prevent more spawned objects as ALL clients not know they cannot spawn another because there is an object in the scripts parameter
-        // ^ due to if (spawnedObj = null) in if statement in the Update function
+        // ^ due to if (spawnedObj = null) in if statement in the Update function --> reason its client is because each client has different parameters to disable
     }
 
     [ObserversRpc]
