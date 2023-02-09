@@ -23,7 +23,6 @@ public class PlayerHealth : NetworkBehaviour
             UpdateHealth(this, -1);
         }
     }
-
     [ServerRpc]
     public void UpdateHealth(PlayerHealth script, int amount)
     {

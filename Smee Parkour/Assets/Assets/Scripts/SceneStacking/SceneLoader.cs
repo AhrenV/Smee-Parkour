@@ -3,6 +3,7 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Managing.Scened;
 using FishNet.Managing.Logging;
+using FishNet.Component.Observing;
 
 public class SceneLoader : NetworkBehaviour
 {
@@ -29,6 +30,8 @@ public class SceneLoader : NetworkBehaviour
         sld.MovedNetworkObjects = new NetworkObject[] { nob };
         sld.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadConnectionScenes(nob.Owner, sld);
+
+        MatchCondition.AddToMatch(1, nob.Owner);
     }
 
     public bool SceneStack = false;

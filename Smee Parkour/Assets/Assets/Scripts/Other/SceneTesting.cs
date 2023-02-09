@@ -3,10 +3,13 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Managing.Scened;
 using FishNet.Managing.Logging;
+using FishNet.Connection;
+using System.Linq;
 
 public class SceneTesting : NetworkBehaviour
 {
     public const string SCENE_NAME = "Test Realm";
+    public PartyCreator manager;
 
     [Server(Logging = LoggingType.Off)]
 
@@ -22,9 +25,14 @@ public class SceneTesting : NetworkBehaviour
         if (!nob.Owner.IsActive)
             return;
 
+        var conns = SceneManager.SceneConnections.Values.ToArray()[0].ToArray();
+
+        
         SceneLoadData sld = new SceneLoadData(SCENE_NAME);
-        sld.MovedNetworkObjects = new NetworkObject[] { nob };
+        NetworkObject[] nobs = new NetworkObject[] { };
+        
+        sld.MovedNetworkObjects = nobs; // carrying all the clients over
         sld.ReplaceScenes = ReplaceOption.All;
-        InstanceFinder.SceneManager.LoadConnectionScenes(nob.Owner, sld);
+        InstanceFinder.SceneManager.LoadConnectionScenes(conns, sld);
     }
 }

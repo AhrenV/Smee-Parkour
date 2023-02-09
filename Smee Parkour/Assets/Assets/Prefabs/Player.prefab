@@ -171,7 +171,6 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 8556786018819346566}
   - {fileID: 3080510012800444942}
-  - {fileID: 0}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   _isNetworked: 1
@@ -244,7 +243,7 @@ MonoBehaviour:
   _overrideType: 3
   _updateHostVisibility: 1
   _observerConditions:
-  - {fileID: 11400000, guid: 2033f54fd2794464bae08fa5a55c8996, type: 2}
+  - {fileID: 11400000, guid: efcd7f0dfd341ed4e8671079e91e0544, type: 2}
 --- !u!114 &3080510012800444942
 MonoBehaviour:
   m_ObjectHideFlags: 0
