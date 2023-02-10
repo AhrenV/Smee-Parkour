@@ -4,7 +4,7 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Connection;
 using FishNet.Managing.Scened;
-using FishNet.Managing.Logging;
+using FishNet.Component.Observing;
 using System.Linq;
 
 public class PartyCreator : NetworkBehaviour
@@ -35,13 +35,15 @@ public class PartyCreator : NetworkBehaviour
         sld.MovedNetworkObjects = nobs.ToArray(); // carrying all required netobj's over
         sld.ReplaceScenes = ReplaceOption.All;
         SceneManager.LoadConnectionScenes(conns, sld);
+
+        MatchCondition.AddToMatch(conns[0].ClientId, conns);
     }
 
     // Connect a player to a lobby
     [ServerRpc(RequireOwnership = false)]
     public void ConnectPlayer(NetworkConnection conn = null)
     {
-        SERVERS[0].Add(conn); // Adding player to lobby
+        SERVERS[0].Add(conn); // Adding player to test lobby
     }
 
     public void OnClick()
