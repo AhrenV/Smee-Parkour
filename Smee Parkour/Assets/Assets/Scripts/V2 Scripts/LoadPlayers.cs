@@ -18,7 +18,6 @@ public class LoadPlayers : NetworkBehaviour
     {
         NetworkObject nob = other.GetComponent<NetworkObject>();
         if (nob != null)
-            print("call");
             manager.LoadLobbyScene("Test Realm", manager.SERVERS[0].ToArray());
     }
 }

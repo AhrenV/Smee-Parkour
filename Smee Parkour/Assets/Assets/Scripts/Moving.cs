@@ -20,7 +20,7 @@ public class Moving : NetworkBehaviour
 
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
-        Vector3 offset = new Vector3(horizontal, Physics.gravity.y, vertical) * (moveSpeed * Time.deltaTime);
+        Vector3 offset = new Vector3(horizontal, Physics.gravity.y*0.1f, vertical) * (moveSpeed * Time.deltaTime);
         _characterController.Move(offset);
     }
 }

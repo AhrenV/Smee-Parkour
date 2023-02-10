@@ -18,25 +18,31 @@ public class PartyCreator : NetworkBehaviour
         SERVERS.Add(new_server); // Adding lobby object into Servers List.
     }
 
+    // Get lobby (list) and load all connection into a scene
+    public void LoadLobbyScene(string SCENE_NAME, NetworkConnection[] conns)
+    {
+
+        SceneLoadData sld = new SceneLoadData(SCENE_NAME);
+        List<NetworkObject> nobs = new List<NetworkObject> {  };
+
+        // Looping through all net connections in lobby
+        foreach (var con in conns)
+        {
+            NetworkObject obj = con.FirstObject.GetComponent<NetworkObject>();
+            nobs.Add(obj); // adding player object into array to pass through to new scene
+        }
+
+        sld.MovedNetworkObjects = nobs.ToArray(); // carrying all required netobj's over
+        sld.ReplaceScenes = ReplaceOption.All;
+        SceneManager.LoadConnectionScenes(conns, sld);
+    }
+
     // Connect a player to a lobby
     [ServerRpc(RequireOwnership = false)]
     public void ConnectPlayer(NetworkConnection conn = null)
     {
-        print(conn.ClientId);
         SERVERS[0].Add(conn); // Adding player to lobby
     }
-
-    // Get lobby (list) and load all connection into a scene
-    public void LoadLobbyScene(string SCENE_NAME, NetworkConnection[] conns)
-    {
-        SceneLoadData sld = new SceneLoadData(SCENE_NAME);
-        NetworkObject[] nobs = new NetworkObject[] { };
-
-        sld.MovedNetworkObjects = nobs; // carrying all required netobj's over
-        sld.ReplaceScenes = ReplaceOption.None;
-        SceneManager.LoadConnectionScenes(conns, sld);
-    }
-    [ServerRpc(RequireOwnership =false)]
 
     public void OnClick()
     {
