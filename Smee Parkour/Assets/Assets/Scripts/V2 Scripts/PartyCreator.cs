@@ -19,6 +19,7 @@ public class PartyCreator : NetworkBehaviour
     }
 
     // Get lobby (list) and load all connection into a scene
+    [ServerRpc(RequireOwnership = false)]
     public void LoadLobbyScene(string SCENE_NAME, NetworkConnection[] conns)
     {
 
@@ -48,7 +49,14 @@ public class PartyCreator : NetworkBehaviour
 
     public void OnClick()
     {
+        print("conned");
         ConnectPlayer();
+    }
+
+    public void TeleportServer()
+    {
+        print("TP");
+        LoadLobbyScene("Test Realm", SERVERS[0].ToArray());
     }
 
 }
