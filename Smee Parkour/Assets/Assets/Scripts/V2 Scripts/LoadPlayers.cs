@@ -17,7 +17,7 @@ public class LoadPlayers : NetworkBehaviour
     private void OnTriggerEnter(Collider other)
     {
         NetworkObject nob = other.GetComponent<NetworkObject>();
-        if (nob != null)
-            manager.LoadLobbyScene("Test Realm", manager.SERVERS[0].ToArray());
+        if (nob != null) { }
+            //manager._LoadLobbyScene("Test Realm", 0);
     }
 }
