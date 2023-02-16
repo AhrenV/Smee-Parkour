@@ -18,7 +18,6 @@ public class UINETManager : NetworkBehaviour
     [ObserversRpc]
     public void UIAddServer(int serverID)
     {
-        print("UIAddServer");
         Button serverFrame = Instantiate(serverExample);
         serverFrame.transform.SetParent(listContent.transform, false);
         serverFrame.gameObject.SetActive(true);

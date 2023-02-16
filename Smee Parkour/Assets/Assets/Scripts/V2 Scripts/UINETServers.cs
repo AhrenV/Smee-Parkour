@@ -11,58 +11,38 @@ public class UINETServers : NetworkBehaviour
 {
     // GLOBAL VARIABLES
     public UINETManager UIManager;
+    private readonly string connector = "-";
+    private readonly int partySize = 1;
     
     
     [SyncObject]
-    private readonly SyncList<List<NetworkConnection>> SERVERS = new SyncList<List<NetworkConnection>>();
+    private readonly SyncList<string> SERVERS = new SyncList<string>();
 
     private void Awake()
     {
-        /* Listening to SyncList callbacks are a
-        * little different from SyncVars. */
         SERVERS.OnChange += _myCollection_OnChange;
     }
 
-    /* Like SyncVars the callback offers an asServer option
-     * to indicate if the callback is occurring on the server
-     * or the client. As SyncVars do, changes have already been
-     * made to the collection before the callback occurs. */
     private void _myCollection_OnChange(SyncListOperation op, int index,
-         List<NetworkConnection> oldItem, List<NetworkConnection> newItem, bool asServer)
+         string oldItem, string newItem, bool asServer)
     {
         switch (op)
         {
-            /* An object was added to the list. Index
-            * will be where it was added, which will be the end
-            * of the list, while newItem is the value added. */
             case SyncListOperation.Add:
                 break;
-            /* An object was removed from the list. Index
-            * is from where the object was removed. oldItem
-            * will contain the removed item. */
+
             case SyncListOperation.RemoveAt:
                 break;
-            /* An object was inserted into the list. Index
-            * is where the obejct was inserted. newItem
-            * contains the item inserted. */
+
             case SyncListOperation.Insert:
                 break;
-            /* An object replaced another. Index
-            * is where the object was replaced. oldItem
-            * is the item that was replaced, while
-            * newItem is the item which now has it's place. */
+
             case SyncListOperation.Set:
                 break;
-            /* All objects have been cleared. Index, oldValue,
-            * and newValue are default. */
+
             case SyncListOperation.Clear:
                 break;
-            /* When complete calls all changes have been
-            * made to the collection. You may use this
-            * to refresh information in relation to
-            * the list changes, rather than doing so
-            * after every entry change. Like Clear
-            * Index, oldItem, and newItem are all default. */
+
             case SyncListOperation.Complete:
                 break;
         }
@@ -73,7 +53,7 @@ public class UINETServers : NetworkBehaviour
     public void CreateServer(NetworkConnection conn = null)
     {
         // Create a new server instance
-        List<NetworkConnection> new_server = new List<NetworkConnection>() { conn };
+        string new_server = ""+conn.ClientId;
         // Adding instance to SERVERS
         SERVERS.Add(new_server);
         // Get ServerID
@@ -89,16 +69,36 @@ public class UINETServers : NetworkBehaviour
     public void ConnectPlayer(int serverID, NetworkConnection conn = null)
     {
         // Adding player to SERVERS datatable
-        SERVERS[serverID].Add(conn);
+        List<NetworkConnection> server = DecodeString(SERVERS[serverID]);
+        if (server.Count >= partySize)
+        { print("party full!");  return; }
+        server.Add(conn);
+
+        // Syncing Client Settings
+        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID;
+
+        // Setting new server value
+        SERVERS[serverID] = EncodeString(server);
     }
 
+    /*
+    // SEND SERVERID TO CLIENT
+    [TargetRpc]
+    public void UpdateServerId(int serverID)
+    {
+
+    }
+    */
 
     // LOAD LOBBY INTO A DIFFERENT SCENE
     [ServerRpc(RequireOwnership = false)]
     public void LoadLobby(string SCENE_NAME, int serverID)
     {
+        print("LL");
         // Grabbing player array via serverID
-        NetworkConnection[] conns = SERVERS[serverID].ToArray();
+        //int[] connIDS = SERVERS[serverID].ToArray();
+        NetworkConnection[] conns = DecodeString(SERVERS[serverID]).ToArray();
+
         // Make SLD object
         SceneLoadData sld = new SceneLoadData(SCENE_NAME);
         // Create List of NetworkObjects to pass through
@@ -120,7 +120,39 @@ public class UINETServers : NetworkBehaviour
         SceneManager.LoadConnectionScenes(conns, sld);
 
         // Add to match condition
-        MatchCondition.AddToMatch(conns[0].ClientId, conns);
+        MatchCondition.AddToMatch(serverID, conns);
+    }
+
+    // FUNCTIONS FOR OTHER SCRIPTS
+    public NetworkConnection[] GetServer(int serverID)
+    {
+        return DecodeString(SERVERS[serverID]).ToArray();
+    }
+
+
+    // ENCODING METHODS
+    private List<NetworkConnection> DecodeString(string str)
+    {
+        print("SERVER STRING: " + str);
+        string[] IDS = str.Split(connector);
+        List<NetworkConnection> nobs = new List<NetworkConnection> { };
+
+        foreach (string ID in IDS)
+        {
+            print(ServerManager.Clients[int.Parse(ID)]);
+            nobs.Add(ServerManager.Clients[int.Parse(ID)]);
+        }
+        return nobs;
+    }
+
+    private string EncodeString(List<NetworkConnection> conns)
+    {
+        List<int> IDs = new List<int> { };
+        foreach (NetworkConnection conn in conns)
+        {
+            IDs.Add(conn.ClientId);
+        }
+        return string.Join(connector, IDs);
     }
 
 }
