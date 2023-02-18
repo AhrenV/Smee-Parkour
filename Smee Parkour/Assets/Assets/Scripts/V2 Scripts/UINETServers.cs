@@ -90,7 +90,7 @@ public class UINETServers : NetworkBehaviour
 
     public NetworkConnection[] GetLocalServer(int serverID)
     {
-        print("SERVER HASH: "+SERVERS[serverID]);
+        //print("SERVER HASH: "+SERVERS[serverID]);
         return DecodeString(SERVERS[serverID]).ToArray();
     }
     

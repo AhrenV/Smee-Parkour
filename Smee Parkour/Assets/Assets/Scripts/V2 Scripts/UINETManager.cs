@@ -21,6 +21,6 @@ public class UINETManager : NetworkBehaviour
         Button serverFrame = Instantiate(serverExample);
         serverFrame.transform.SetParent(listContent.transform, false);
         serverFrame.gameObject.SetActive(true);
-        serverExample.GetComponent<UINETServerList>().serverID = serverID;
+        serverFrame.GetComponent<UINETServerList>().serverID = serverID;
     }
 }

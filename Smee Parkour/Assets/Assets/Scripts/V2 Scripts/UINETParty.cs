@@ -28,10 +28,9 @@ public class UINETParty : NetworkBehaviour
         {
             server = serverManager.GetLocalServer(localSettings.ServerID);
         }
-        catch (Exception e)
+        catch
         {
             verified = false;
-            print(e);
         }
         
         if (verified)
