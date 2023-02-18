@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 
 public class NETClientSettings : NetworkBehaviour
 {
-    public int ServerID;
+    [SyncVar]
+    public int ServerID = -1;
 }

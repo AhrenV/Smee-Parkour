@@ -12,7 +12,7 @@ public class UINETServers : NetworkBehaviour
     // GLOBAL VARIABLES
     public UINETManager UIManager;
     private readonly string connector = "-";
-    private readonly int partySize = 1;
+    private readonly int partySize = 4;
     
     
     [SyncObject]
@@ -21,6 +21,7 @@ public class UINETServers : NetworkBehaviour
     private void Awake()
     {
         SERVERS.OnChange += _myCollection_OnChange;
+        
     }
 
     private void _myCollection_OnChange(SyncListOperation op, int index,
@@ -52,12 +53,16 @@ public class UINETServers : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void CreateServer(NetworkConnection conn = null)
     {
+        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>();
+        if (settings.ServerID != -1) { print("You can't make more than 1 server");  return;  }
         // Create a new server instance
-        string new_server = ""+conn.ClientId;
+        string new_server = "-"+conn.ClientId+"-";
         // Adding instance to SERVERS
         SERVERS.Add(new_server);
         // Get ServerID
         int serverID = SERVERS.IndexOf(new_server);
+        // Syncing Client Settings
+        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID;
         // Client function --> Adding frame to Server List for clients.
         UIManager.UIAddServer(serverID);
         print("Server created with ID: " + serverID);
@@ -68,10 +73,12 @@ public class UINETServers : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ConnectPlayer(int serverID, NetworkConnection conn = null)
     {
+        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>();
+        if (settings.ServerID != -1) { print("You can't join a new server when you're currently in one"); return; }
         // Adding player to SERVERS datatable
         List<NetworkConnection> server = DecodeString(SERVERS[serverID]);
-        if (server.Count >= partySize)
-        { print("party full!");  return; }
+        if (server.Count >= partySize || server.Contains(conn))
+        { print("party full or already joined");  return; }
         server.Add(conn);
 
         // Syncing Client Settings
@@ -81,14 +88,12 @@ public class UINETServers : NetworkBehaviour
         SERVERS[serverID] = EncodeString(server);
     }
 
-    /*
-    // SEND SERVERID TO CLIENT
-    [TargetRpc]
-    public void UpdateServerId(int serverID)
+    public NetworkConnection[] GetLocalServer(int serverID)
     {
-
+        print("SERVER HASH: "+SERVERS[serverID]);
+        return DecodeString(SERVERS[serverID]).ToArray();
     }
-    */
+    
 
     // LOAD LOBBY INTO A DIFFERENT SCENE
     [ServerRpc(RequireOwnership = false)]
@@ -123,24 +128,17 @@ public class UINETServers : NetworkBehaviour
         MatchCondition.AddToMatch(serverID, conns);
     }
 
-    // FUNCTIONS FOR OTHER SCRIPTS
-    public NetworkConnection[] GetServer(int serverID)
-    {
-        return DecodeString(SERVERS[serverID]).ToArray();
-    }
-
 
     // ENCODING METHODS
     private List<NetworkConnection> DecodeString(string str)
     {
-        print("SERVER STRING: " + str);
+        str = str.Substring(1, str.Length - 2);
         string[] IDS = str.Split(connector);
         List<NetworkConnection> nobs = new List<NetworkConnection> { };
 
         foreach (string ID in IDS)
         {
-            print(ServerManager.Clients[int.Parse(ID)]);
-            nobs.Add(ServerManager.Clients[int.Parse(ID)]);
+            nobs.Add(ClientManager.Clients[int.Parse(ID)]);
         }
         return nobs;
     }
@@ -152,7 +150,7 @@ public class UINETServers : NetworkBehaviour
         {
             IDs.Add(conn.ClientId);
         }
-        return string.Join(connector, IDs);
+        return "-"+string.Join(connector, IDs)+"-";
     }
 
 }
