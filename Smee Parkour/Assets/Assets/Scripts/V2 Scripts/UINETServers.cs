@@ -91,7 +91,7 @@ public class UINETServers : NetworkBehaviour
     public NetworkConnection[] GetLocalServer(int serverID)
     {
         //print("SERVER HASH: "+SERVERS[serverID]);
-        return DecodeString(SERVERS[serverID]).ToArray();
+        return DecodeLocalString(SERVERS[serverID]).ToArray();
     }
     
 
@@ -99,9 +99,7 @@ public class UINETServers : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void LoadLobby(string SCENE_NAME, int serverID)
     {
-        print("LL");
         // Grabbing player array via serverID
-        //int[] connIDS = SERVERS[serverID].ToArray();
         NetworkConnection[] conns = DecodeString(SERVERS[serverID]).ToArray();
 
         // Make SLD object
@@ -110,7 +108,7 @@ public class UINETServers : NetworkBehaviour
         List<NetworkObject> nobs = new List<NetworkObject> { };
 
         // Looping through all client connections
-        foreach (var con in conns)
+        foreach (NetworkConnection con in conns)
         {
             // Retrieving NetOb component
             NetworkObject obj = con.FirstObject.GetComponent<NetworkObject>();
@@ -128,9 +126,21 @@ public class UINETServers : NetworkBehaviour
         MatchCondition.AddToMatch(serverID, conns);
     }
 
-
     // ENCODING METHODS
     private List<NetworkConnection> DecodeString(string str)
+    {
+        str = str.Substring(1, str.Length - 2);
+        string[] IDS = str.Split(connector);
+        List<NetworkConnection> nobs = new List<NetworkConnection> { };
+
+        foreach (string ID in IDS)
+        {
+            nobs.Add(ServerManager.Clients[int.Parse(ID)]);
+        }
+        return nobs;
+    }
+    // For decoding from client
+    private List<NetworkConnection> DecodeLocalString(string str)
     {
         str = str.Substring(1, str.Length - 2);
         string[] IDS = str.Split(connector);

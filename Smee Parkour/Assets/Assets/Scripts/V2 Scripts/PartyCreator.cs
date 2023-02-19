@@ -25,7 +25,8 @@ public class PartyCreator : NetworkBehaviour
 
     public void TeleportServer()
     {
-        print("TP!");
+        print("TP!NEWw");
+        //serverManager.TestObject();
         serverManager.LoadLobby("Test Realm", 0);
     }
 

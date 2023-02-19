@@ -25,7 +25,6 @@ public class PlayerController : NetworkBehaviour
     private float cameraYOffset = 0.4f;
     private Camera playerCamera;
 
-
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -44,15 +43,18 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
-
         // Lock cursor
+        if (gameObject.scene.name == "Main Menu") { return;  }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
+        if (!base.IsOwner || gameObject.scene.name == "Main Menu") { return;  }
         bool isRunning = false;
+        playerCamera = Camera.main;
+        print(Camera.main.name);
 
         // Press Left Shift to run
         isRunning = Input.GetKey(KeyCode.LeftShift);
@@ -84,7 +86,7 @@ public class PlayerController : NetworkBehaviour
         characterController.Move(moveDirection * Time.deltaTime);
 
         // Player and Camera rotation
-        if (canMove && playerCamera != null)
+        if (canMove)
         {
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);

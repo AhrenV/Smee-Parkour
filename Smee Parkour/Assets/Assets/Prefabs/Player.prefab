@@ -109,9 +109,9 @@ GameObject:
   - component: {fileID: 8556786018819346565}
   - component: {fileID: 8556786018819346564}
   - component: {fileID: 8556786018819346567}
+  - component: {fileID: -5702215302487645828}
   - component: {fileID: 8556786018819346566}
   - component: {fileID: 9021522179358442963}
-  - component: {fileID: 3080510012800444942}
   - component: {fileID: -6250911905610980355}
   m_Layer: 0
   m_Name: Player
@@ -171,8 +171,8 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 0}
   - {fileID: 8556786018819346566}
-  - {fileID: 3080510012800444942}
   - {fileID: -6250911905610980355}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
@@ -188,6 +188,29 @@ MonoBehaviour:
   <AssetPathHash>k__BackingField: 14879437073810785341
   _sceneNetworkObjects:
   - {fileID: 8556786018819346567}
+--- !u!114 &-5702215302487645828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556786018819346571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a28ac221e9165e148b4b84c7d8ca03a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 255
+  _addedNetworkObject: {fileID: 8556786018819346567}
+  _networkObjectCache: {fileID: 0}
+  walkingSpeed: 7.5
+  runningSpeed: 11.5
+  jumpSpeed: 8
+  gravity: 20
+  lookSpeed: 2
+  lookXLimit: 45
+  canMove: 1
+  cameraYOffset: 0.4
 --- !u!114 &8556786018819346566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 8556786018819346567}
   _networkObjectCache: {fileID: 8556786018819346567}
   _synchronizeParent: 0
@@ -246,22 +269,6 @@ MonoBehaviour:
   _updateHostVisibility: 1
   _observerConditions:
   - {fileID: 11400000, guid: efcd7f0dfd341ed4e8671079e91e0544, type: 2}
---- !u!114 &3080510012800444942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8556786018819346571}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 932a4c5b04996f4439a2774008200a63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 8556786018819346567}
-  _networkObjectCache: {fileID: 8556786018819346567}
-  moveSpeed: 5
 --- !u!114 &-6250911905610980355
 MonoBehaviour:
   m_ObjectHideFlags: 0
