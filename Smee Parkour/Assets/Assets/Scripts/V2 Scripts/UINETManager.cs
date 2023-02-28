@@ -7,12 +7,17 @@ using FishNet.Object;
 public class UINETManager : NetworkBehaviour
 {
     public Button serverExample;
+    public UINETServers serverManager;
     public GameObject listContent;
 
     public override void OnStartClient()
     {
         base.OnStartClient();
-
+        foreach(int i in serverManager.GetLocalServerIDs())
+        {
+            print("addy");
+            UIAddServer(i);
+        }
     }
 
     [ObserversRpc]

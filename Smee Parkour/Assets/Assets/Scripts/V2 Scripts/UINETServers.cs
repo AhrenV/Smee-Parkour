@@ -6,6 +6,7 @@ using FishNet.Object.Synchronizing;
 using FishNet.Connection;
 using FishNet.Component.Observing;
 using FishNet.Managing.Scened;
+using System.Linq;
 
 public class UINETServers : NetworkBehaviour
 {
@@ -16,12 +17,11 @@ public class UINETServers : NetworkBehaviour
     
     
     [SyncObject]
-    private readonly SyncList<string> SERVERS = new SyncList<string>();
+    private readonly SyncList<string> SERVERS = new SyncList<string>() {"-0-"};
 
     private void Awake()
     {
         SERVERS.OnChange += _myCollection_OnChange;
-        
     }
 
     private void _myCollection_OnChange(SyncListOperation op, int index,
@@ -88,6 +88,14 @@ public class UINETServers : NetworkBehaviour
         SERVERS[serverID] = EncodeString(server);
     }
 
+    public int[] GetLocalServerIDs()
+    {
+        foreach (var i in SERVERS)
+        {
+            print(i);
+        }
+        return SERVERS.Select(x => SERVERS.IndexOf(x)).ToArray();
+    }
     public NetworkConnection[] GetLocalServer(int serverID)
     {
         //print("SERVER HASH: "+SERVERS[serverID]);

@@ -52,9 +52,13 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!base.IsOwner || gameObject.scene.name == "Main Menu") { return;  }
+        if (Cursor.lockState != CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
         bool isRunning = false;
-        playerCamera = Camera.main;
-        print(Camera.main.name);
 
         // Press Left Shift to run
         isRunning = Input.GetKey(KeyCode.LeftShift);

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8556786017759409673}
   - component: {fileID: 8556786017759409672}
   - component: {fileID: 8556786017759409679}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,9 +113,10 @@ GameObject:
   - component: {fileID: 8556786018819346566}
   - component: {fileID: 9021522179358442963}
   - component: {fileID: -6250911905610980355}
-  m_Layer: 0
+  - component: {fileID: 2761803600319063522}
+  m_Layer: 10
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -171,7 +172,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 0}
+  - {fileID: -5702215302487645828}
   - {fileID: 8556786018819346566}
   - {fileID: -6250911905610980355}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
@@ -200,9 +201,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a28ac221e9165e148b4b84c7d8ca03a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 0
   _addedNetworkObject: {fileID: 8556786018819346567}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 8556786018819346567}
   walkingSpeed: 7.5
   runningSpeed: 11.5
   jumpSpeed: 8
@@ -285,6 +286,22 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8556786018819346567}
   _networkObjectCache: {fileID: 8556786018819346567}
   ServerID: -1
+--- !u!208 &2761803600319063522
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556786018819346571}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &8556786018987785270
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +314,7 @@ GameObject:
   - component: {fileID: 8556786018987785266}
   - component: {fileID: 8556786018987785265}
   - component: {fileID: 8556786018987785264}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Visor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
