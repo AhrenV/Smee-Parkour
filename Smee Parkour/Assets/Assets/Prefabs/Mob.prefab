@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 9021522179358442963}
   - component: {fileID: -276885243855685664}
   - component: {fileID: 9042474088094187420}
+  - component: {fileID: -3901189541407369364}
   m_Layer: 0
   m_Name: Mob
   m_TagString: Untagged
@@ -284,6 +285,20 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8556786018819346567}
   _networkObjectCache: {fileID: 8556786018819346567}
   agent: {fileID: -276885243855685664}
+  slashFX: {fileID: 0}
+--- !u!114 &-3901189541407369364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556786018819346571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a7b512a8f484c7498061d65ff1cb134, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
 --- !u!1 &8556786018987785270
 GameObject:
   m_ObjectHideFlags: 0

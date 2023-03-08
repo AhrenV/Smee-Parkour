@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8556786017759409673}
   - component: {fileID: 8556786017759409672}
   - component: {fileID: 8556786017759409679}
+  - component: {fileID: 7270013213761112145}
   m_Layer: 10
   m_Name: Body
   m_TagString: Untagged
@@ -98,6 +99,22 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7270013213761112145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8556786017759409677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69000b781c0d9a54db2de0402707f7f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 3
+  _addedNetworkObject: {fileID: 8556786018819346567}
+  _networkObjectCache: {fileID: 8556786018819346567}
+  Health: 100
 --- !u!1 &8556786018819346571
 GameObject:
   m_ObjectHideFlags: 0
@@ -175,6 +192,7 @@ MonoBehaviour:
   - {fileID: -5702215302487645828}
   - {fileID: 8556786018819346566}
   - {fileID: -6250911905610980355}
+  - {fileID: 7270013213761112145}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   _isNetworked: 1
@@ -206,7 +224,7 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 8556786018819346567}
   walkingSpeed: 7.5
   runningSpeed: 11.5
-  jumpSpeed: 8
+  jumpSpeed: 6
   gravity: 20
   lookSpeed: 2
   lookXLimit: 45

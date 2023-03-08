@@ -44,14 +44,14 @@ public class PlayerController : NetworkBehaviour
     {
         characterController = GetComponent<CharacterController>();
         // Lock cursor
-        if (gameObject.scene.name == "Main Menu") { return;  }
+        if (gameObject.scene.name == "Main Menu") { return; }
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
     void Update()
     {
-        if (!base.IsOwner || gameObject.scene.name == "Main Menu") { return;  }
+        if (!base.IsOwner || gameObject.scene.name == "Main Menu") { return; }
         if (Cursor.lockState != CursorLockMode.Locked)
         {
             Cursor.lockState = CursorLockMode.Locked;
