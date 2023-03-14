@@ -4,6 +4,7 @@ using UnityEngine;
 using FishNet;
 using FishNet.Object;
 
+/// NOTE: Script does nothing, just used for testing.
 
 public class NETPlayerLoader : MonoBehaviour
 {

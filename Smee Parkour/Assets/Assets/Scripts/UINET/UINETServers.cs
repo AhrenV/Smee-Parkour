@@ -1,33 +1,43 @@
+/// Importing NameSpaces
+// Default
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+// All FishNet namespaces are related to Networking
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using FishNet.Connection;
 using FishNet.Component.Observing;
 using FishNet.Managing.Scened;
+// Other
 using System.Linq;
 
+/// SCRIPT CLASS
 public class UINETServers : NetworkBehaviour
 {
     // GLOBAL VARIABLES
-    public UINETManager UIManager;
-    private readonly string connector = "-";
-    private readonly int partySize = 4;
+    public UINETManager UIManager; // Reference to the UI Manager script which holds functions/subroutines for User Interface based procedures.
+    private readonly string connector = "-"; // The connected used for processing ServerStrings.
+    private readonly int partySize = 4; // Maximum number of players which can join a party/lobby/server.
+    private readonly string demoScene = "Peaceful"; // Name of the DEMO scene.
     
-    
+    // ** PARTY DATABASE **
     [SyncObject]
     private readonly SyncList<string> SERVERS = new SyncList<string>() {};
 
+    /// NOTE: The reason I didn't use a 2D List/Datastructure (E.g. A List of HashSets) is because FishNet does not support the serialization of 2D data structures NATIVELY, so if I were to use 2D data structurs I would need to make a custom serialiser, which is rather complex and I prefer to use this approach for that sake.
+    // If this were NOT the case, then I would most certainly have used a 2D data structure, E.g. List of HashSets, or a List of Lists.
+
+    // -------- Allow SyncList to inherit the same behaviour as a Regular List would. (Not very important to understand, just documentation code)
     private void Awake()
     {
-        SERVERS.OnChange += _myCollection_OnChange;
+        SERVERS.OnChange += _myCollection_OnChange; // Subscribing to the OnChange event.
     }
 
     private void _myCollection_OnChange(SyncListOperation op, int index,
          string oldItem, string newItem, bool asServer)
     {
-        switch (op)
+        switch (op) // A sequence of operations which can be performed on the list.
         {
             case SyncListOperation.Add:
                 break;
@@ -48,127 +58,158 @@ public class UINETServers : NetworkBehaviour
                 break;
         }
     }
+    /// ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    // CREATE A PLAYER LOBBY
-    [ServerRpc(RequireOwnership = false)]
-    public void CreateServer(NetworkConnection conn = null)
+    /// NOTE: The terms "Server" and "Party" may be used interchangably. To avoid any confusion, think of these terms as a group of players who have now banded together, who will play a specific level together.
+
+    /// --------------------------------------------------------------------------------------------ALL SERVER SIDE FUNCTIONS / SUBROUTINES----------------------------------------------------------------------------------------------------------------
+
+
+
+    /// FUNCTION / SUBROUTINE to Create a Server
+    [ServerRpc(RequireOwnership = false)] // Allows clients to call the RPC regardless if they are the "Network Owner" of the object.
+    public void CreateServer(NetworkConnection conn = null) // conn is a default parameter passed when calling a ServerRPC (Remote procedure call), which is an object that allows the programmer to access certain properties of the Client (such as their Client ID)
     {
-        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>();
-        if (settings.ServerID != -1) { print("You can't make more than 1 server");  return;  }
-        // Create a new server instance
-        string new_server = "-"+conn.ClientId+"-";
-        // Adding instance to SERVERS
-        SERVERS.Add(new_server);
-        // Get ServerID
-        int serverID = SERVERS.IndexOf(new_server);
-        // Syncing Client Settings
-        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID;
+        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>(); // Get the client's "Settings", which are stored in the Player Character
+        if (settings.ServerID != -1) { print("You can't make more than 1 server");  return;  } // Prevent players from joining a different party if they are already in one (-1 is the default value for clients who haven't joined a party yet)
+
+        string new_server = "-"+conn.ClientId+"-"; // Create a new Server String to add to the **Party Database**, with the players' Client ID inside of it (Used as an identifier to allow the program to recognise certain players)
+        SERVERS.Add(new_server); // Add the Server string to the **Party Database**
+
+        int serverID = SERVERS.IndexOf(new_server); // This gets the unique server ID of the Server (Each server has their own Unique Identifier, being their index within the Database)
+
+        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID; // Setting the ServerID (in our understanding the ID of the party the player is in) to the new value (as the player has just "joined" a new server)
         // Client function --> Adding frame to Server List for clients.
-        UIManager.UIAddServer(serverID);
-        print("Server created with ID: " + serverID);
+
+        UIManager.UIAddServer(serverID); // This function/method adds a new button to the server list, allowing it be seen by new players, allowing them to join the server/party too.
+
+        print("Server created with ID: " + serverID); // Debug purposes, just prints out the Server's ID that was just created.
     }
 
 
-    // CONNECT A PLAYER TO AN EXSTING LOBBY
+
+    /// FUNCTION / SUBROUTINE to Connect a Player to a new Server
     [ServerRpc(RequireOwnership = false)]
-    public void ConnectPlayer(int serverID, NetworkConnection conn = null)
+    public void ConnectPlayer(int serverID, NetworkConnection conn = null) // The serverID is passed through by the client, allowing the function to specify which server/party the player wants to join.
     {
-        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>();
-        if (settings.ServerID != -1) { print("You can't join a new server when you're currently in one"); return; }
+        NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>(); // Obtain client settings
+
+        if (settings.ServerID != -1) { print("You can't join a new server when you're currently in one"); return; } // Check whether the player/client is already in a server, if they are then return the function (ending it).
+
         // Adding player to SERVERS datatable
-        List<NetworkConnection> server = DecodeString(SERVERS[serverID]);
-        if (server.Count >= partySize || server.Contains(conn))
+        List<NetworkConnection> server = DecodeString(SERVERS[serverID]); // Access the ServerString using the unique serverID passed through from the **Party Database**, converting it into a list allowing us to access all the clients properly.
+        
+        if (server.Count >= partySize || server.Contains(conn)) // Check if the server is full, or the player/client is already in the party. If they are then return the function
         { print("party full or already joined");  return; }
-        server.Add(conn);
 
-        // Syncing Client Settings
-        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID;
+        server.Add(conn); // Add the player/client to the Server String.
 
-        // Setting new server value
-        SERVERS[serverID] = EncodeString(server);
-    }
+        conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID; // Sync the Client Settings, updating the ServerID they are currently in, since they joined a new party.
 
-    public int[] GetLocalServerIDs()
-    {
-        foreach (var i in SERVERS)
-        {
-            print(i);
-        }
-        return SERVERS.Select(x => SERVERS.IndexOf(x)).ToArray();
-    }
-    public NetworkConnection[] GetLocalServer(int serverID)
-    {
-        //print("SERVER HASH: "+SERVERS[serverID]);
-        return DecodeLocalString(SERVERS[serverID]).ToArray();
+        SERVERS[serverID] = EncodeString(server); // Overwrite the old ServerString with the new one which INCLUDES the new player
     }
     
 
-    // LOAD LOBBY INTO A DIFFERENT SCENE
+
+    /// FUNCTION / SUBROUTINE to Load a Party/Server into a NEW Level
     [ServerRpc(RequireOwnership = false)]
-    public void LoadLobby(string SCENE_NAME, int serverID)
+    public void LoadLobby(string SCENE_NAME, int serverID) // SCENE_NAME is the name of the scene the party will load in to. ServerID, is the ID of the Server/Party that is to be loaded into a new Scene/Level
     {
-        // Grabbing player array via serverID
-        NetworkConnection[] conns = DecodeString(SERVERS[serverID]).ToArray();
+        SCENE_NAME = demoScene; // This line is here for DEMO purposes, making players load in to the Demo Scene regardless.
+        NetworkConnection[] conns = DecodeString(SERVERS[serverID]).ToArray(); // Grabbing the list of players in the current server/party.
 
         // Make SLD object
-        SceneLoadData sld = new SceneLoadData(SCENE_NAME);
-        // Create List of NetworkObjects to pass through
-        List<NetworkObject> nobs = new List<NetworkObject> { };
+        SceneLoadData sld = new SceneLoadData(SCENE_NAME); // Make an SLD object, essentially allows me to specify objects that will load in to the new level, and the players who will be teleported along with it.
 
-        // Looping through all client connections
+        List<NetworkObject> nobs = new List<NetworkObject> { }; // Create a list of objects which will be passed through.
+
+        // Looping through all of the players in the current Party
         foreach (NetworkConnection con in conns)
         {
-            // Retrieving NetOb component
-            NetworkObject obj = con.FirstObject.GetComponent<NetworkObject>();
+            NetworkObject obj = con.FirstObject.GetComponent<NetworkObject>(); // Retrieving the NetworkObject component of the player's character (this is what is needed to pass the object into the new scene)
             // Adding Nob to List to pass through
-            nobs.Add(obj);
+            nobs.Add(obj); // Adding this object into the empty list created previously.
         }
+
         // Add Nobs to moved + convert to array
-        sld.MovedNetworkObjects = nobs.ToArray();
-        // Replace options
-        sld.ReplaceScenes = ReplaceOption.All;
-        // Load players + nobs into new scene
-        SceneManager.LoadConnectionScenes(conns, sld);
+        sld.MovedNetworkObjects = nobs.ToArray(); // Add the list of Objects into the SLD object, converting it to an array (SLD supports arrays, not lists)
 
-        // Add to match condition
-        MatchCondition.AddToMatch(serverID, conns);
+        sld.ReplaceScenes = ReplaceOption.All; // Useful to prevent empty scenes which will take up unnessesary strain on the server.
+
+        SceneManager.LoadConnectionScenes(conns, sld); // Load the all the clients/players into the new Level alongside their player characters.
+
+        MatchCondition.AddToMatch(serverID, conns); // Add to a specific Match, with the serverID being the identifier, and the conns being the list of players (this feature is to prevent clients to see eachother from different levels)
     }
 
-    // ENCODING METHODS
-    private List<NetworkConnection> DecodeString(string str)
-    {
-        str = str.Substring(1, str.Length - 2);
-        string[] IDS = str.Split(connector);
-        List<NetworkConnection> nobs = new List<NetworkConnection> { };
 
-        foreach (string ID in IDS)
+
+    /// FUNCTION / SUBROUTINE to Decode a Server String (into a List of NetworkConnections)
+    private List<NetworkConnection> DecodeString(string str) // str is the ServerString parameter which will be processed into an array
+    {
+        str = str.Substring(1, str.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
+        string[] IDS = str.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+        
+        List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
+
+        // Iterate through the array of ClientID integers
+        foreach (string ID in IDS) 
         {
-            nobs.Add(ServerManager.Clients[int.Parse(ID)]);
+            nobs.Add(ServerManager.Clients[int.Parse(ID)]); // Add the NetworkConnection object of the client to the empty List through the use of the Players ClientID to obtain said Object.
         }
-        return nobs;
-    }
-    // For decoding from client
-    private List<NetworkConnection> DecodeLocalString(string str)
-    {
-        str = str.Substring(1, str.Length - 2);
-        string[] IDS = str.Split(connector);
-        List<NetworkConnection> nobs = new List<NetworkConnection> { };
-
-        foreach (string ID in IDS)
-        {
-            nobs.Add(ClientManager.Clients[int.Parse(ID)]);
-        }
-        return nobs;
+        return nobs; // Returning a list of NetworkObjects E.g, {NetworkConnection1, NetworkConnection2}
     }
 
-    private string EncodeString(List<NetworkConnection> conns)
+
+
+    /// FUNCTION / SUBROUTINE to Encode a Server String (into a ServerString)
+    private string EncodeString(List<NetworkConnection> conns) // List of NetworkConnections to Encode
     {
-        List<int> IDs = new List<int> { };
+        List<int> IDs = new List<int> { }; // Declare a new empty list of integers
+
+        // Loop through the list passed as a parameter
         foreach (NetworkConnection conn in conns)
         {
-            IDs.Add(conn.ClientId);
+            IDs.Add(conn.ClientId); // Add the ClientID of the player into the empty list of integers declared previously.
         }
-        return "-"+string.Join(connector, IDs)+"-";
+
+        return "-" + string.Join(connector, IDs) + "-"; // Return a newly formatted server string, E.g. "-0-3-"
+    }
+
+
+    /// --------------------------------------------------------------------------------------------ALL SERVER SIDE FUNCTIONS / SUBROUTINES----------------------------------------------------------------------------------------------------------------
+
+
+    /// FUNCTION / SUBROUTINE to get a list of IDs from ALL the active Server/Party's
+    public int[] GetLocalServerIDs()
+    {
+        return SERVERS.Select(x => SERVERS.IndexOf(x)).ToArray(); // More complex way of a for loop and getting the index of the element within the list, then converting to an array.
+        /// Explanation:
+        // We name the element that is currently being iterated over as x, we get the index of x within the **Party Database** data structure, and that will now be part of the new list.
+        // You can find more information on this in the LINQ documentation (uses the namespace System.Linq)
+    }
+
+    /// FUNCTION / SUBROUTINE to get the server locally
+    public NetworkConnection[] GetLocalServer(int serverID) // Parameter being the specified ServerID to get the player list for.
+    {
+        return DecodeLocalString(SERVERS[serverID]).ToArray(); // Return the decoded string, and convert the datatype from a list to an array
+    }
+
+    /// FUNCTION / SUBROUTINE to Decode a ServerString locally (You need to use a different method to obtain a player's NetworkObject locally compared to from the server due to security reasons).
+    private List<NetworkConnection> DecodeLocalString(string str) // str is the ServerString to be decoded
+    {
+        str = str.Substring(1, str.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
+        string[] IDS = str.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+       
+        List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
+
+        // Iterate through the array of ClientID integers
+        foreach (string ID in IDS)
+        {
+            nobs.Add(ClientManager.Clients[int.Parse(ID)]); // Add the NetworkConnection object of the client to the empty List through the use of the Players ClientID to obtain said Object.
+        }
+        return nobs; // Returning a list of NetworkObjects E.g, {NetworkConnection1, NetworkConnection2}
     }
 
 }
+
+/// --------------------------------------------------------------------------------------------END OF SCRIPT------------------------------------------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// NOTE: This script is here to counteract a Unity Error bug which disables all the objects when in the editor.
+
 public class enabler : MonoBehaviour
 {
     public GameObject canvas;
