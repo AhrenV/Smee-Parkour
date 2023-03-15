@@ -71,6 +71,7 @@ public class UINETServers : NetworkBehaviour
     public void CreateServer(NetworkConnection conn = null) // conn is a default parameter passed when calling a ServerRPC (Remote procedure call), which is an object that allows the programmer to access certain properties of the Client (such as their Client ID)
     {
         NETClientSettings settings = conn.FirstObject.GetComponent<NETClientSettings>(); // Get the client's "Settings", which are stored in the Player Character
+
         if (settings.ServerID != -1) { print("You can't make more than 1 server");  return;  } // Prevent players from joining a different party if they are already in one (-1 is the default value for clients who haven't joined a party yet)
 
         string new_server = "-"+conn.ClientId+"-"; // Create a new Server String to add to the **Party Database**, with the players' Client ID inside of it (Used as an identifier to allow the program to recognise certain players)
@@ -79,7 +80,6 @@ public class UINETServers : NetworkBehaviour
         int serverID = SERVERS.IndexOf(new_server); // This gets the unique server ID of the Server (Each server has their own Unique Identifier, being their index within the Database)
 
         conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID; // Setting the ServerID (in our understanding the ID of the party the player is in) to the new value (as the player has just "joined" a new server)
-        // Client function --> Adding frame to Server List for clients.
 
         UIManager.UIAddServer(serverID); // This function/method adds a new button to the server list, allowing it be seen by new players, allowing them to join the server/party too.
 
@@ -127,7 +127,7 @@ public class UINETServers : NetworkBehaviour
         foreach (NetworkConnection con in conns)
         {
             NetworkObject obj = con.FirstObject.GetComponent<NetworkObject>(); // Retrieving the NetworkObject component of the player's character (this is what is needed to pass the object into the new scene)
-            // Adding Nob to List to pass through
+
             nobs.Add(obj); // Adding this object into the empty list created previously.
         }
 
@@ -144,10 +144,10 @@ public class UINETServers : NetworkBehaviour
 
 
     /// FUNCTION / SUBROUTINE to Decode a Server String (into a List of NetworkConnections)
-    private List<NetworkConnection> DecodeString(string str) // str is the ServerString parameter which will be processed into an array
+    private List<NetworkConnection> DecodeString(string serverString)
     {
-        str = str.Substring(1, str.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
-        string[] IDS = str.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+        serverString = serverString.Substring(1, serverString.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
+        string[] IDS = serverString.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
         
         List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
 
@@ -195,10 +195,10 @@ public class UINETServers : NetworkBehaviour
     }
 
     /// FUNCTION / SUBROUTINE to Decode a ServerString locally (You need to use a different method to obtain a player's NetworkObject locally compared to from the server due to security reasons).
-    private List<NetworkConnection> DecodeLocalString(string str) // str is the ServerString to be decoded
+    private List<NetworkConnection> DecodeLocalString(string serverString)
     {
-        str = str.Substring(1, str.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
-        string[] IDS = str.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+        serverString = serverString.Substring(1, serverString.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
+        string[] IDS = serverString.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
        
         List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
 

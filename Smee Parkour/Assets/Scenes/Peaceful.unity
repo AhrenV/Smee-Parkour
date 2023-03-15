@@ -347,7 +347,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh827416
+  m_Name: pb_Mesh28624
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -553,10 +553,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 27506427}
     m_Modifications:
-    - target: {fileID: -276885243855685664, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
-      propertyPath: m_StoppingDistance
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346565, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -603,16 +599,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: <SceneId>k__BackingField
-      value: 8902631059410065606
+      value: 8902631060207859357
       objectReference: {fileID: 0}
+    - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
+      propertyPath: _sceneNetworkObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 1232488971}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[1]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1210547732}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1605896206}
     - target: {fileID: 8556786018819346571, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_Name
       value: Mob (2)
@@ -642,10 +642,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 27506427}
     m_Modifications:
-    - target: {fileID: -276885243855685664, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
-      propertyPath: m_StoppingDistance
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346565, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -695,23 +691,30 @@ PrefabInstance:
       value: 8902631059157299653
       objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
-      propertyPath: _sceneNetworkObjects.Array.size
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[1]
       value: 
-      objectReference: {fileID: 1605896206}
+      objectReference: {fileID: 1210547732}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 1210547732}
+      objectReference: {fileID: 1605896206}
     - target: {fileID: 8556786018819346571, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_Name
       value: Mob (4)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
+--- !u!114 &1232488971 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
+  m_PrefabInstance: {fileID: 1232488970}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1333561212 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7443408887813606051, guid: 0b650fca685f2eb41a86538aa883e4c1, type: 3}
@@ -795,10 +798,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 27506427}
     m_Modifications:
-    - target: {fileID: -276885243855685664, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
-      propertyPath: m_StoppingDistance
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346565, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -848,9 +847,9 @@ PrefabInstance:
       value: 8902631059620922684
       objectReference: {fileID: 0}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
-      propertyPath: _sceneNetworkObjects.Array.size
-      value: 2
-      objectReference: {fileID: 0}
+      propertyPath: _sceneNetworkObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 1232488971}
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[1]
       value: 
@@ -858,7 +857,7 @@ PrefabInstance:
     - target: {fileID: 8556786018819346567, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: _sceneNetworkObjects.Array.data[2]
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1605896206}
     - target: {fileID: 8556786018819346571, guid: a09dea9c1392f0b48beeb34f0bfadefd, type: 3}
       propertyPath: m_Name
       value: Mob (3)
