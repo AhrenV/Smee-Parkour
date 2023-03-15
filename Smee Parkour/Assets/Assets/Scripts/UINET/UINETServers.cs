@@ -1,7 +1,7 @@
 /// Importing NameSpaces
 // Default
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic; 
 using UnityEngine;
 // All FishNet namespaces are related to Networking
 using FishNet.Object;
@@ -17,7 +17,7 @@ public class UINETServers : NetworkBehaviour
 {
     // GLOBAL VARIABLES
     public UINETManager UIManager; // Reference to the UI Manager script which holds functions/subroutines for User Interface based procedures.
-    private readonly string connector = "-"; // The connected used for processing ServerStrings.
+    private readonly char delimiter = '-'; // The connected used for processing ServerStrings.
     private readonly int partySize = 4; // Maximum number of players which can join a party/lobby/server.
     private readonly string demoScene = "Peaceful"; // Name of the DEMO scene.
     
@@ -143,12 +143,13 @@ public class UINETServers : NetworkBehaviour
 
 
 
-    /// FUNCTION / SUBROUTINE to Decode a Server String (into a List of NetworkConnections)
+    /// FUNCTION / SUBROUTINE to Decode a Server String (into a List of NetworkConnections) <--- COMPLEX ALGORITHM
     private List<NetworkConnection> DecodeString(string serverString)
     {
-        serverString = serverString.Substring(1, serverString.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
-        string[] IDS = serverString.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
-        
+        string[] IDS = serverString.Split(delimiter); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+
+        IDS = IDS.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Removes all the empty entries from the array.
+
         List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
 
         // Iterate through the array of ClientID integers
@@ -172,7 +173,7 @@ public class UINETServers : NetworkBehaviour
             IDs.Add(conn.ClientId); // Add the ClientID of the player into the empty list of integers declared previously.
         }
 
-        return "-" + string.Join(connector, IDs) + "-"; // Return a newly formatted server string, E.g. "-0-3-"
+        return delimiter + string.Join(delimiter, IDs) + delimiter; // Return a newly formatted server string, E.g. "-0-3-"
     }
 
 
@@ -197,9 +198,10 @@ public class UINETServers : NetworkBehaviour
     /// FUNCTION / SUBROUTINE to Decode a ServerString locally (You need to use a different method to obtain a player's NetworkObject locally compared to from the server due to security reasons).
     private List<NetworkConnection> DecodeLocalString(string serverString)
     {
-        serverString = serverString.Substring(1, serverString.Length - 2); // Truncates the first and last character from the string, E.g. "-0-3-" becomes "0-3"
-        string[] IDS = serverString.Split(connector); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
-       
+        string[] IDS = serverString.Split(delimiter); // Splits the string into an array using the specified delimiter, E.g. "0-3" becomes {0, 3}
+
+        IDS = IDS.Where(x => !string.IsNullOrEmpty(x)).ToArray(); // Removes all the empty entries from the array.
+
         List<NetworkConnection> nobs = new List<NetworkConnection> { }; // Creating a new empty List of type NetworkConnection (allows us to access players' information)
 
         // Iterate through the array of ClientID integers
