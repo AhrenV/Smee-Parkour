@@ -25,13 +25,17 @@ public class PlayerController : NetworkBehaviour
     private float cameraYOffset = 0.4f;
     private Camera playerCamera;
 
+    // Animator component
+    [SerializeField] Animator animator;
+
     public override void OnStartClient()
     {
         base.OnStartClient();
         if (base.IsOwner)
         {
             playerCamera = Camera.main;
-            playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + cameraYOffset, transform.position.z);
+            //playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + cameraYOffset, transform.position.z);
+            playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + 3, transform.position.z-5);
             playerCamera.transform.SetParent(transform);
         }
         else
@@ -52,11 +56,8 @@ public class PlayerController : NetworkBehaviour
     void Update()
     {
         if (!base.IsOwner || gameObject.scene.name == "Main Menu") { return; }
-        if (Cursor.lockState != CursorLockMode.Locked)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
+
+        canMove = (Cursor.lockState == CursorLockMode.None) ? false : true; // Prevents player from moving when navigating the pause menu.
 
         bool isRunning = false;
 
@@ -71,6 +72,15 @@ public class PlayerController : NetworkBehaviour
         float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
         float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+            
+        if (curSpeedX != 0 || curSpeedY != 0)
+        {
+            print("moving");
+            animator.SetBool("isWalking", true);
+        } else
+        {
+            animator.SetBool("isWalking", false);
+        }
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {

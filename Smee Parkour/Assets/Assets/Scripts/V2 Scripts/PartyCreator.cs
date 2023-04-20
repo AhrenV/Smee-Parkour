@@ -19,16 +19,10 @@ public class PartyCreator : NetworkBehaviour
         serverManager.ConnectPlayer(serverID); // Calling the ServerRPC (method which will be called on the server end) to connect the player who called this function.
     }
 
-    // OnClick function for connecting a player.
-    public void CreateServer()
-    {
-        serverManager.CreateServer(); // Calling the ServerRPC to create a new server for the player who called this function.
-    }
-
     // OnClick function for teleporting a party/server to a NEW level.
     public void TeleportServer()
     { 
-        serverManager.LoadLobby("Peaceful", 0); // Calling the ServerRPC to load a specific party/server into a new level/scene.
+        serverManager.LoadLobby(); // Calling the ServerRPC to load a specific party/server into a new level/scene.
     }
 
 }
