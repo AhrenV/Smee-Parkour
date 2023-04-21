@@ -16,21 +16,29 @@ public class UINETManager : NetworkBehaviour
     public UINETServers serverManager; // The main script for networking, holds important subroutines.
     public GameObject listContent; // The gameobject which holds all the preabs for allowing players to join new parties.
 
-    // This function runs when this object becomes first visible to the client.
+    private List<int> UIservers = new List<int> { };
+
     public override void OnStartClient()
     {
         base.OnStartClient();
-        // Gets all already existing servers and adds buttons for them to the server list, allowing avaialble parties to be joinable by other players.
-        foreach(int i in serverManager.GetLocalServerIDs())
+        InvokeRepeating("CheckServers", 1.0f, 1.0f);
+    }
+
+    void CheckServers()
+    {
+        foreach (int ID in serverManager.GetLocalServerIDs())
         {
-            UIAddServer(i); // Call the local function within this class which adds the new button to the server list.
+            if (!UIservers.Contains(ID)) {
+                UIAddServer(ID);
+                UIservers.Add(ID);
+            }
         }
     }
 
     // Function to add a server banner/button indicator to the server list to allow players to join
-    [ObserversRpc]
     public void UIAddServer(int serverID)
     {
+        print("Add server: " + serverID);
         Button serverFrame = Instantiate(serverExample); // Duplicate the prefab.
         serverFrame.transform.SetParent(listContent.transform, false); // Set the parent to the List Content object.
         serverFrame.gameObject.SetActive(true); // Make the object visisble

@@ -82,7 +82,7 @@ public class UINETServers : NetworkBehaviour
 
         conn.FirstObject.GetComponent<NETClientSettings>().ServerID = serverID; // Setting the ServerID (in our understanding the ID of the party the player is in) to the new value (as the player has just "joined" a new server)
 
-        UIManager.UIAddServer(serverID); // This function/method adds a new button to the server list, allowing it be seen by new players, allowing them to join the server/party too.
+        //UIManager.UIAddServer(serverID); // This function/method adds a new button to the server list, allowing it be seen by new players, allowing them to join the server/party too.
 
         print("Server created with ID: " + serverID); // Debug purposes, just prints out the Server's ID that was just created.
     }

@@ -19,6 +19,7 @@ public class UINETServerList : NetworkBehaviour
     // Updates every frame.
     private void Update()
     {
+        print("IM ALIVE");
         NetworkConnection[] server = new NetworkConnection[] { }; // Empty list
         bool verified = true; // If the server ID isn't valid then verified = false
         try
